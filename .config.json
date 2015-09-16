@@ -1,7 +1,5 @@
 {
-  "Port": "",
-  "User": "",
-  "Password": "",
-  "Root": "",
-  "Folders": ""
+  "Name": "sam",
+  "Password": "$2a$10$tVXVbg1g8yfc7JPgTPMLq.Oyc5SsgnyqQRjUINoxVcy/ns3PGP7A6",
+  "Root": "/home/sam/go/src/raspDlna"
 }

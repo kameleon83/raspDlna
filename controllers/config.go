@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"raspDlna/models"
 
@@ -13,18 +12,17 @@ type ConfigController struct {
 	beego.Controller
 }
 
-func ReadJson(config models.Configuration, exePath string) {
+func ReadJson(config models.Configuration, exePath string) (string, string, string) {
 	file, err := ioutil.ReadFile(exePath + "/.config.json")
 	if err != nil {
+		WriteJson(config, exePath)
 		panic("Impossible de transformer la configuration en JSON")
 	}
 	json.Unmarshal(file, &config)
-	fmt.Printf("Port : %s\n", config.Port)
-	fmt.Printf("Folders : %s\n", config.Folders)
+	return config.Name, config.Password, config.Root
 }
 
 func WriteJson(config models.Configuration, exePath string) {
-
 	b, err := json.MarshalIndent(config, "", "  ")
 	err = ioutil.WriteFile(exePath+"/.config.json", b, 0644)
 	if err != nil {

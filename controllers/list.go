@@ -30,6 +30,19 @@ type FileInfo struct {
 var Root = beego.AppConfig.String("homeDirectory")
 
 func (c *ListController) Get() {
+	flash := beego.ReadFromRequest(&c.Controller)
+	if _, ok := flash.Data["notice"]; ok {
+	}
+	v := c.GetSession("raspDlna")
+	if v == nil {
+		c.SetSession("raspDlnaID", int(1))
+		c.Data["num"] = 0
+
+	} else {
+		c.SetSession("raspDlnaID", v.(int)+1)
+		c.Data["num"] = v.(int)
+	}
+
 	file := filepath.Clean(c.Ctx.Input.Param(":dir"))
 
 	d, _ := Emplacement(Root, file)

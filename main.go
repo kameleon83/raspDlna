@@ -10,7 +10,6 @@ import (
 var globalSessions *session.Manager
 
 func main() {
-	beego.Run()
 	globalSessions, _ = session.NewManager("memory",
 		`{"cookieName":"gosessionid",
 						"enableSetCookie,omitempty": true,
@@ -24,4 +23,12 @@ func main() {
 						`)
 	go globalSessions.GC()
 
+	if beego.SessionOn != true {
+		beego.SessionOn = true
+		beego.SessionName = "raspDlna"
+		beego.SessionProvider = "file"
+		beego.SessionSavePath = "./tmp"
+	}
+
+	beego.Run()
 }
