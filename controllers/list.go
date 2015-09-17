@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/astaxie/beego"
+	"github.com/kardianos/osext"
 )
 
 type ListController struct {
@@ -27,7 +28,7 @@ type FileInfo struct {
 	Srt      int
 }
 
-var Root = beego.AppConfig.String("homeDirectory")
+var Root, _ = osext.ExecutableFolder()
 
 func (c *ListController) Get() {
 	flash := beego.ReadFromRequest(&c.Controller)

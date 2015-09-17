@@ -7,7 +7,6 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
-	"syscall"
 
 	"github.com/astaxie/beego"
 )
@@ -20,10 +19,6 @@ func (c *ChdirController) Get() {
 	edit := c.Ctx.Input.Param(":name")
 	root := beego.AppConfig.String("homeDirectory")
 	lF := listFolder(root, edit)
-
-	filePerm, _ := os.Stat(root + edit)
-	c.Data["uid"] = filePerm.Sys().(*syscall.Stat_t).Uid
-	c.Data["gid"] = filePerm.Sys().(*syscall.Stat_t).Gid
 
 	htmlMediainfo := mediaInfo(root, edit)
 	c.Data["name"] = path.Base(edit)

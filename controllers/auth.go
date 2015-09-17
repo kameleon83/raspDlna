@@ -16,14 +16,13 @@ type AuthController struct {
 
 func (l *AuthController) Login() {
 
-	exePath, _ := osext.ExecutableFolder()
 	register := models.Configuration{}
 
 	l.Ctx.Request.ParseForm()
 	username := l.Ctx.Request.Form.Get("username")
 	password := l.Ctx.Request.Form.Get("password")
 
-	n, p, r := ReadJson(register, exePath)
+	n, p, r := ReadJson(register, Root)
 	if l.GetSession("name") != n {
 		if l.Ctx.Input.Method() == "POST" {
 			if err := l.ParseForm(&register); err != nil {
@@ -54,11 +53,11 @@ func (l *AuthController) Login() {
 }
 
 func (l *AuthController) Register() {
-	exePath, _ := osext.ExecutableFolder()
+	Root, _ := osext.ExecutableFolder()
 
 	register := models.Configuration{}
 
-	n, _, _ := ReadJson(register, exePath)
+	n, _, _ := ReadJson(register, Root)
 	if l.GetSession("name") == n {
 		l.Redirect("/", 302)
 	} else {
@@ -81,7 +80,7 @@ func (l *AuthController) Register() {
 							fmt.Println("erreur de validation", err)
 							fmt.Println(register)
 						} else {
-							WriteJson(register, exePath)
+							WriteJson(register, Root)
 							l.SetSession("raspDlna", int(1))
 							l.SetSession("name", register.Name)
 							l.SetSession("root", register.Root)
@@ -94,7 +93,7 @@ func (l *AuthController) Register() {
 	}
 
 	l.Data["title"] = "Configurer l'application"
-	l.Data["root"] = exePath
+	l.Data["root"] = Root
 	l.Layout = "index.tpl"
 	l.TplNames = "register.tpl"
 }
