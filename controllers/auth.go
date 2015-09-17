@@ -22,29 +22,34 @@ func (l *AuthController) Login() {
 	username := l.Ctx.Request.Form.Get("username")
 	password := l.Ctx.Request.Form.Get("password")
 
-	n, p, r := ReadJson(register, Root)
-	if l.GetSession("name") != n {
-		if l.Ctx.Input.Method() == "POST" {
-			if err := l.ParseForm(&register); err != nil {
-				fmt.Println("Pas de donnée parsé")
-			} else {
-				l.Ctx.Request.ParseForm()
-				if username == n {
-					if err := CompareHashAndPassword([]byte(p), []byte(password)); err != nil {
-						fmt.Println("les mots de passes ne correspondent pas")
-					} else {
-						l.SetSession("name", username)
-						l.SetSession("root", r)
-						l.Redirect("/", 302)
-					}
-
+	n, p, r, err := ReadJson(register, Root)
+	if !err {
+		l.Redirect("/register", 302)
+	} else {
+		if l.GetSession("name") != n {
+			if l.Ctx.Input.Method() == "POST" {
+				if err := l.ParseForm(&register); err != nil {
+					fmt.Println("Pas de donnée parsé")
 				} else {
-					fmt.Println("les entrées ne sont pas correctes")
+					l.Ctx.Request.ParseForm()
+					if username == n {
+						if err := CompareHashAndPassword([]byte(p), []byte(password)); err != nil {
+							fmt.Println("les mots de passes ne correspondent pas")
+						} else {
+							l.SetSession("name", username)
+							l.SetSession("root", r)
+							l.Redirect("/", 302)
+						}
+
+					} else {
+						fmt.Println("les entrées ne sont pas correctes")
+					}
 				}
 			}
+		} else {
+			l.Redirect("/", 302)
 		}
-	} else {
-		l.Redirect("/", 302)
+
 	}
 
 	l.Data["title"] = "Se connecter"
@@ -57,7 +62,7 @@ func (l *AuthController) Register() {
 
 	register := models.Configuration{}
 
-	n, _, _ := ReadJson(register, Root)
+	n, _, _, _ := ReadJson(register, Root)
 	if l.GetSession("name") == n {
 		l.Redirect("/", 302)
 	} else {

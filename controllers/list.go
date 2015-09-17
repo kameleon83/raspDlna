@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
+	"raspDlna/models"
 	"strings"
 	"sync"
 	"time"
@@ -28,9 +30,11 @@ type FileInfo struct {
 	Srt      int
 }
 
-var Root, _ = osext.ExecutableFolder()
+var exepath, _ = osext.ExecutableFolder()
+var _, _, Root, _ = ReadJson(models.Configuration{}, exepath)
 
 func (c *ListController) Get() {
+	fmt.Println(Root)
 	flash := beego.ReadFromRequest(&c.Controller)
 	if _, ok := flash.Data["notice"]; ok {
 	}
