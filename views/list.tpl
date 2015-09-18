@@ -65,6 +65,10 @@
                 </form>
                 {{ if not $l.IsDir }}
                 <button type="button" class="btn btn-link">
+                    <a href="/srt/{{ .edit | str2html }}">
+                        <span class="glyphicon glyphicon-list-alt"></span></a>
+                    </button>
+                <button type="button" class="btn btn-link">
                     <a href="/edit{{ $.href }}/{{$l.Name }}">
                         <span class="glyphicon glyphicon-pencil"></span></a>
                     </button>
@@ -72,8 +76,8 @@
                     <button type="button" class="btn btn-link">
                     <a href='/list{{ $.href}}/{{ $l.Name }}'>
                         <span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>
-                    </button>
                     </a>
+                    </button>
                     {{ end }}
                     <button type="button" class="btn btn-link">
                         <a href="/delete{{ $.href }}/{{$l.Name }}">
