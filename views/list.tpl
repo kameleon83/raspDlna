@@ -65,7 +65,7 @@
                 </form>
                 {{ if not $l.IsDir }}
                 <button type="button" class="btn btn-link">
-                    <a href="/srt/{{ .edit | str2html }}">
+                    <a href="/srt{{ $.href }}/{{$l.Name }}">
                         <span class="glyphicon glyphicon-list-alt"></span></a>
                     </button>
                 <button type="button" class="btn btn-link">

@@ -47,29 +47,20 @@ func (c *ChdirController) Post() {
 			go func() {
 				if Path[0] == "" {
 					a := filepath.Dir(newPath2)
+					fmt.Println(a)
 					chemin := strings.Replace(a, Root, "", -1)
-					if finfo, err := os.Stat(d); err == nil {
-						if !finfo.IsDir() {
-							os.MkdirAll(a, 0777)
-						}
+					fmt.Println(chemin)
+					bo := Rename(d, newPath2)
+					if !bo {
+						fmt.Println("erreur 2")
 					}
-					err := os.Rename(d, newPath2)
-					if err != nil {
-						check(err)
-					}
-					if f, err := IsEmpty(path.Dir(d)); f == true {
-						err = os.Remove(path.Dir(d))
-						if err != nil {
-							check(err)
-						}
-					}
-					c.Redirect("/edit/"+chemin+"/"+f, 302)
+					c.Redirect("/list/"+chemin, 302)
 				} else {
-					err := os.Rename(d, newPath)
-					if err != nil {
-						check(err)
+					err := Rename(d, newPath)
+					if !err {
+						fmt.Println("erreur 3")
 					}
-					c.Redirect("/edit/"+strings.Join(Path, "")+"/"+f, 302)
+					c.Redirect("/list/"+strings.Join(Path, ""), 302)
 				}
 				fmt.Println("Le changement de répertoire est effectué")
 			}()

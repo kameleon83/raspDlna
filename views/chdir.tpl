@@ -20,19 +20,7 @@
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
-<br>
-<br>
-<br>
-<br>
-<div class="col-md-12">
 
-    <a href="/srt/{{ .edit | str2html }}" class="btn btn-info" name="button">Créer Sous-titre</a>
-</div>
-
-<br>
-<br>
-<br>
-<br>
 <div class="">
 
 {{ .htmlMediaInfo | str2html }}

@@ -18,8 +18,9 @@ type CmdController struct {
 
 func (c *CmdController) Srt() {
 	lien := c.Ctx.Input.Param(":video")
+	fmt.Println(lien)
 	lien = html.UnescapeString(lien)
-
+	fmt.Println(lien)
 	d, _ := Emplacement(Root, lien)
 	fileNotExt := strings.TrimSuffix(d, filepath.Ext(d))
 	// // ffmpeg -i Movie.mkv -map 0:s:0 subs.srt
@@ -34,7 +35,7 @@ func (c *CmdController) Srt() {
 		}
 		fmt.Println("Le sous-titre est créé")
 	}()
-	c.Redirect("/edit/"+lien, 302)
+	c.Redirect("/list/"+path.Clean(path.Dir(lien)), 302)
 
 }
 
@@ -80,11 +81,38 @@ func Rename(oldFile, newFile string) bool {
 			newFileNotExt := strings.TrimSuffix(newFile, filepath.Ext(newFile))
 			oldFileWithExt := oldFileNotExt + ".srt"
 			if _, err := os.Stat(oldFileWithExt); err != nil {
-				check(err)
+				fmt.Println("Il n'existe pas de sous titre")
+				if f, err := os.Stat(path.Dir(oldFile)); err != nil {
+					check(err)
+				} else {
+					if f.IsDir() {
+						if v, err := IsEmpty(path.Dir(oldFile)); v == true && err == nil {
+							if v, err := Delete(path.Dir(oldFile)); v != true && err != nil {
+								check(err)
+							} else {
+								return true
+							}
+						}
+					}
+				}
+				return true
 			} else {
 				if err := os.Rename(oldFileWithExt, newFileNotExt+".srt"); err != nil {
 					check(err)
 				} else {
+					if f, err := os.Stat(path.Dir(oldFile)); err != nil {
+						check(err)
+					} else {
+						if f.IsDir() {
+							if v, err := IsEmpty(path.Dir(oldFile)); v == true && err == nil {
+								if v, err := Delete(path.Dir(oldFile)); v != true && err != nil {
+									check(err)
+								} else {
+									return true
+								}
+							}
+						}
+					}
 					return true
 				}
 			}
