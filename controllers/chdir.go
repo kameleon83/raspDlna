@@ -17,12 +17,10 @@ type ChdirController struct {
 
 func (c *ChdirController) Get() {
 	edit := c.Ctx.Input.Param(":name")
-	root := beego.AppConfig.String("homeDirectory")
-	lF := listFolder(root, edit)
-
-	htmlMediainfo := mediaInfo(root, edit)
+	lF := listFolder(Root, edit)
+	htmlMediainfo := mediaInfo(Root, edit)
 	c.Data["name"] = path.Base(edit)
-	c.Data["root"] = root
+	c.Data["root"] = Root
 	c.Data["htmlMediaInfo"] = htmlMediainfo
 	c.Data["edit"] = edit
 	c.Data["listFolder"] = lF
@@ -100,8 +98,8 @@ func listFolder(root, file string) []string {
 func mediaInfo(root, file string) string {
 	cmd := exec.Command("mediainfo", "--Output=HTML", path.Clean(root+file))
 	out, err := cmd.Output()
-
 	if err != nil {
+		fmt.Println("erreur 1 : ", path.Clean(root+file))
 		check(err)
 	}
 	cmd.Wait()

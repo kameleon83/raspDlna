@@ -24,7 +24,7 @@ func ReadJson(config models.Configuration, exePath string) (string, string, stri
 
 func WriteJson(config models.Configuration, exePath string) {
 	b, err := json.MarshalIndent(config, "", "  ")
-	err = ioutil.WriteFile(exePath+"/.config.json", b, 0777)
+	err = ioutil.WriteFile(exePath+"/.config.json", b, 0755)
 	if err != nil {
 		panic("Impossible d'écrire dans le fichier de configuration")
 	}

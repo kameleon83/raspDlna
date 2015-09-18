@@ -13,7 +13,7 @@
     <table class="table table-striped">
         <tr>
             <th>
-                <a href="/list/{{ .back | htmlunquote }}"><span class="glyphicon glyphicon-arrow-up"></span></a>
+                <a href="/list/{{ .back }}"><span class="glyphicon glyphicon-arrow-up"></span></a>
             </th>
             <th>Nom</th>
             <th>Srt</th>
@@ -30,7 +30,7 @@
             </td>
             <td>
                 {{ if $l.IsDir }}
-                <a href='/list{{ $.href | htmlunquote}}/{{ $l.Name | htmlunquote }}'>
+                <a href='/list{{ $.href}}/{{ $l.Name }}'>
 
                     {{ $l.Name }}
                 </a>
@@ -47,7 +47,7 @@
                 {{ $l.Size }}<span class="pull-right">{{ $l.NameSize }}</span>
             </td>
             <td class="inline-td">
-                <form method="POST" action="/vues{{ $.href | htmlunquote }}/{{ $l.Name | htmlunquote}}">
+                <form method="POST" action="/vues{{ $.href }}/{{ $l.Name}}">
                     {{ if not $l.IsDir }}
                     <button type="submit" class="btn btn-link ">
                         <span class="glyphicon glyphicon-eye-open"></span>
@@ -55,7 +55,7 @@
                     {{ end }}
                 </form>
 
-                <form method="POST" action="/pas-vues{{ $.href | htmlunquote }}/{{ $l.Name | htmlunquote }}">
+                <form method="POST" action="/pas-vues{{ $.href }}/{{ $l.Name }}">
                     {{ if not $l.IsDir }}
                     <button type="submit" class="btn btn-link ">
                         <span class="glyphicon glyphicon-eye-close"></span>
@@ -65,18 +65,18 @@
                 </form>
                 {{ if not $l.IsDir }}
                 <button type="button" class="btn btn-link">
-                    <a href="/edit{{ $.href | htmlunquote }}/{{$l.Name | htmlunquote }}">
+                    <a href="/edit{{ $.href }}/{{$l.Name }}">
                         <span class="glyphicon glyphicon-pencil"></span></a>
                     </button>
                     {{ else }}
                     <button type="button" class="btn btn-link">
-                    <a href='/list{{ $.href | htmlunquote}}/{{ $l.Name | htmlunquote }}'>
+                    <a href='/list{{ $.href}}/{{ $l.Name }}'>
                         <span class="glyphicon glyphicon-folder-close" aria-hidden="true"></span>
                     </button>
                     </a>
                     {{ end }}
                     <button type="button" class="btn btn-link">
-                        <a href="/delete{{ $.href | htmlunquote }}/{{$l.Name | htmlunquote }}">
+                        <a href="/delete{{ $.href }}/{{$l.Name }}">
                             <span class="glyphicon glyphicon-trash"></span>
                         </a>
                     </button>
@@ -86,7 +86,7 @@
 
                     <div class="modal fade" id="myModal{{ $k }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                         <div class="modal-dialog" role="document">
-                            <form method="POST" class="form-horizontal col-sm-12" action="/rename{{ $.href | htmlunquote }}/{{$l.Name | htmlunquote }}">
+                            <form method="POST" class="form-horizontal col-sm-12" action="/rename{{ $.href }}/{{$l.Name }}">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>

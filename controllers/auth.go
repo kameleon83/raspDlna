@@ -22,8 +22,9 @@ func (l *AuthController) Login() {
 	username := l.Ctx.Request.Form.Get("username")
 	password := l.Ctx.Request.Form.Get("password")
 
-	n, p, r, err := ReadJson(register, Root)
-	if !err {
+	n, p, r, TorF := ReadJson(register, exepath)
+	if !TorF {
+		WriteJson(register, exepath)
 		l.Redirect("/register", 302)
 	} else {
 		if l.GetSession("name") != n {

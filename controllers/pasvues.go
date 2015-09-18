@@ -17,7 +17,7 @@ type PasVuesController struct {
 func (p *PasVuesController) Post() {
 
 	file := p.Ctx.Input.Param(":files")
-	d, f := Emplacement(beego.AppConfig.String("homeDirectory"), file)
+	d, f := Emplacement(Root, file)
 	fileNotExt := strings.TrimSuffix(f, filepath.Ext(f))
 	c := fileNotExt + ".srt"
 	pathSrt := path.Dir(d) + "/" + fileNotExt + ".srt"

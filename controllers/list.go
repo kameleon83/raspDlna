@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -34,7 +33,6 @@ var exepath, _ = osext.ExecutableFolder()
 var _, _, Root, _ = ReadJson(models.Configuration{}, exepath)
 
 func (c *ListController) Get() {
-	fmt.Println(Root)
 	flash := beego.ReadFromRequest(&c.Controller)
 	if _, ok := flash.Data["notice"]; ok {
 	}

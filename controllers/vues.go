@@ -23,7 +23,7 @@ func check(e error) {
 func (v *VuesController) Post() {
 
 	file := v.Ctx.Input.Param(":files")
-	d, f := Emplacement(beego.AppConfig.String("homeDirectory"), file)
+	d, f := Emplacement(Root, file)
 	fileNotExt := strings.TrimSuffix(f, filepath.Ext(f))
 	c := fileNotExt + ".srt"
 	pathSrt := path.Dir(d) + "/" + fileNotExt + ".srt"
