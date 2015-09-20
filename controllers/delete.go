@@ -18,12 +18,16 @@ type DeleteController struct {
 
 // Delete : Fonction qui est appelé
 func (d *DeleteController) Delete() {
+	flash := beego.NewFlash()
 	file := d.Ctx.Input.Param(":f")
 	f := path.Dir(file)
 	p, _ := Emplacement(Root, file)
-	fmt.Println(p)
-	d.Redirect("/list/"+f, 302)
 	r, err := Delete(p)
+	if r != true {
+		flash.Error(`Attention le Dossier n'est pas vide. Par conséquent la suppresion n'est pas possible. Cette option arrivera bientôt`)
+		flash.Store(&d.Controller)
+	}
+	d.Redirect("/list/"+f, 302)
 	if r != true || err != nil {
 		check(err)
 	}
@@ -46,7 +50,7 @@ func Delete(pathFile string) (bool, error) {
 				}
 			} else {
 				fmt.Println("Attention le Dossier n'est pas vide. Par conséquent la suppresion n'est pas possible")
-				fmt.Println("Cette option sera arrivera bientôt")
+				fmt.Println("Cette option arrivera bientôt")
 				// os.RemoveAll(pathFile)
 			}
 		} else {

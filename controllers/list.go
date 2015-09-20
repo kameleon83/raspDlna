@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -20,14 +21,25 @@ var exepath, _ = osext.ExecutableFolder()
 var _, _, Root, _ = ReadJson(models.Configuration{}, exepath)
 
 func (c *ListController) Get() {
+	flash := beego.ReadFromRequest(&c.Controller)
+
+	if _, err := os.Stat(exepath + "/.config.json"); err != nil {
+		fmt.Println("erreur")
+		c.DestroySession()
+	}
 
 	go func() {
 		t := models.ListFolder{}
 		t.Folder = listFolder(Root)
 		WriteJson(t, exepath, "listFolder")
 	}()
-	flash := beego.ReadFromRequest(&c.Controller)
 	if _, ok := flash.Data["notice"]; ok {
+	}
+	if _, ok := flash.Data["error"]; ok {
+	}
+	if _, ok := flash.Data["success"]; ok {
+	}
+	if _, ok := flash.Data["warning"]; ok {
 	}
 	v := c.GetSession("raspDlna")
 	if v == nil {
