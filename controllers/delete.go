@@ -33,6 +33,7 @@ func (d *DeleteController) Delete() {
 func Delete(pathFile string) (bool, error) {
 	finfo, err := os.Stat(pathFile)
 	if err != nil {
+		fmt.Println("test dans le delete")
 		check(err)
 	} else {
 		if finfo.IsDir() {

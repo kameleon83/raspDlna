@@ -22,18 +22,22 @@ func (c *CmdController) Srt() {
 	lien = html.UnescapeString(lien)
 	fmt.Println(lien)
 	d, _ := Emplacement(Root, lien)
-	fileNotExt := strings.TrimSuffix(d, filepath.Ext(d))
 	// // ffmpeg -i Movie.mkv -map 0:s:0 subs.srt
-	d = strings.Replace(d, " ", `\ `, -1)
-	fileNotExt = strings.Replace(fileNotExt, " ", `\ `, -1)
+	dNew := strings.Replace(d, " ", `.`, -1)
+	fileNotExt := strings.TrimSuffix(dNew, filepath.Ext(dNew))
+	if result := Rename(d, dNew); !result {
+		fmt.Println("Problème de renommage lors de l'extraction du srt")
+	}
 
-	cmd := exec.Command("ffmpeg", "-i", path.Clean(d), "-map", "0:s:0", path.Clean(fileNotExt)+".srt")
+	cmd := exec.Command("ffmpeg", "-i", path.Clean(dNew), "-map", "0:s", path.Clean(fileNotExt)+".srt")
 	go func() {
 		err := cmd.Start()
 		if err != nil {
 			fmt.Println("Erreur : ", err)
+		} else {
+			fmt.Println("Le sous-titre est créé")
+			fmt.Println(cmd)
 		}
-		fmt.Println("Le sous-titre est créé")
 	}()
 	c.Redirect("/list/"+path.Clean(path.Dir(lien)), 302)
 
@@ -44,10 +48,10 @@ func (c *CmdController) Rename() {
 
 	c.Ctx.Request.ParseForm()
 	file := c.Ctx.Request.Form["rename"]
-	newFile := filepath.Clean(strings.Replace(path.Dir(oldFile)+"/"+strings.Join(file, ""), " ", "-", -1))
+	newFile := filepath.Clean(strings.Replace(path.Dir(oldFile)+"/"+strings.Join(file, ""), " ", ".", -1))
 	dOld, _ := Emplacement(Root, oldFile)
 	dNew, _ := Emplacement(Root, newFile)
-	chemin := strings.Replace(path.Dir(dNew), Root, "", -1)
+	chemin := path.Clean(strings.Replace(path.Dir(dNew), Root, "", -1))
 	c.Redirect("/list/"+chemin, 302)
 	if result := Rename(dOld, dNew); result == true {
 		fmt.Println("Le Dossier / fichier a bien été modifié")
@@ -66,11 +70,7 @@ func Rename(oldFile, newFile string) bool {
 			if err := os.Rename(oldFile, newFile); err != nil {
 				check(err)
 			} else {
-				if v, err := Delete(oldFile); v != true && err != nil {
-					check(err)
-				} else {
-					return true
-				}
+				return true
 			}
 		}
 	} else {
@@ -120,6 +120,6 @@ func Rename(oldFile, newFile string) bool {
 			return true
 		}
 	}
-
+	fmt.Println("It's false")
 	return false
 }

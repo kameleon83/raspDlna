@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"path"
 	"raspDlna/models"
 
 	"github.com/astaxie/beego"
@@ -24,7 +25,7 @@ func (l *AuthController) Login() {
 
 	n, p, r, TorF := ReadJson(register, exepath)
 	if !TorF {
-		WriteJson(register, exepath)
+		WriteJson(register, exepath, "config")
 		l.Redirect("/register", 302)
 	} else {
 		if l.GetSession("name") != n {
@@ -81,15 +82,12 @@ func (l *AuthController) Register() {
 					if password, err := GenerateFromPassword([]byte(pass), DefaultCost); err == nil {
 						register.Name = name
 						register.Password = string(password)
-						register.Root = pathFolder
+						register.Root = path.Clean(pathFolder) + "/"
 						if _, err := valid.Valid(&register); err != nil {
 							fmt.Println("erreur de validation", err)
 							fmt.Println(register)
 						} else {
-							WriteJson(register, Root)
-							l.SetSession("raspDlna", int(1))
-							l.SetSession("name", register.Name)
-							l.SetSession("root", register.Root)
+							WriteJson(register, Root, "config")
 							l.Redirect("/", 302)
 						}
 					}

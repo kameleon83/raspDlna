@@ -7,8 +7,6 @@ import (
 	"path/filepath"
 	"raspDlna/models"
 	"strings"
-	"sync"
-	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/kardianos/osext"
@@ -18,21 +16,16 @@ type ListController struct {
 	beego.Controller
 }
 
-type FileInfo struct {
-	sync.Mutex
-	Name     string
-	Size     float64
-	Mode     os.FileMode
-	ModTime  time.Time
-	IsDir    bool
-	NameSize string
-	Srt      int
-}
-
 var exepath, _ = osext.ExecutableFolder()
 var _, _, Root, _ = ReadJson(models.Configuration{}, exepath)
 
 func (c *ListController) Get() {
+
+	go func() {
+		t := models.ListFolder{}
+		t.Folder = listFolder(Root)
+		WriteJson(t, exepath, "listFolder")
+	}()
 	flash := beego.ReadFromRequest(&c.Controller)
 	if _, ok := flash.Data["notice"]; ok {
 	}
@@ -71,9 +64,9 @@ func Emplacement(dir, file string) (dire, fileExt string) {
 	return filepath.Clean(dire), fileExt
 }
 
-func List(dir string) []FileInfo {
-	list := []FileInfo{}
-	fi := FileInfo{}
+func List(dir string) []models.FileInfo {
+	list := []models.FileInfo{}
+	fi := models.FileInfo{}
 	if info, err := os.Stat(dir); err == nil && info.IsDir() {
 		f, _ := ioutil.ReadDir(dir)
 		for _, entry := range f {
@@ -82,17 +75,21 @@ func List(dir string) []FileInfo {
 			taille, nomTaille := Taille(float64(entry.Size()))
 			if a, _ := SrtOrNot(entry.Name()); a != true {
 				for _, entry2 := range f {
+					tailleSrt, SrtNametaillle := Taille(float64(entry2.Size()))
 					if a, b := SrtOrNot(entry2.Name()); a == true {
 						if fileNotExt == b {
 							namePresent = entry.Name()
-							fi = FileInfo{
-								Name:     entry.Name(),
-								Size:     float64(int(taille*100)) / 100,
-								Mode:     entry.Mode(),
-								ModTime:  entry.ModTime(),
-								IsDir:    entry.IsDir(),
-								NameSize: nomTaille,
-								Srt:      1,
+							fi = models.FileInfo{
+								Name:          entry.Name(),
+								NameExt:       filepath.Ext(entry.Name()),
+								Size:          float64(int(taille*100)) / 100,
+								Mode:          entry.Mode(),
+								ModTime:       entry.ModTime(),
+								IsDir:         entry.IsDir(),
+								NameSize:      nomTaille,
+								Srt:           1,
+								SizeSrt:       float64(int(tailleSrt*100)) / 100,
+								NameTailleSrt: SrtNametaillle,
 							}
 							fi.Lock()
 							list = append(list, fi)
@@ -102,8 +99,9 @@ func List(dir string) []FileInfo {
 				}
 				if namePresent != entry.Name() {
 
-					fi = FileInfo{
+					fi = models.FileInfo{
 						Name:     entry.Name(),
+						NameExt:  filepath.Ext(entry.Name()),
 						Size:     float64(int(taille*100)) / 100,
 						Mode:     entry.Mode(),
 						ModTime:  entry.ModTime(),

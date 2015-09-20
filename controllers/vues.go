@@ -21,7 +21,6 @@ func check(e error) {
 }
 
 func (v *VuesController) Post() {
-
 	file := v.Ctx.Input.Param(":files")
 	d, f := Emplacement(Root, file)
 	fileNotExt := strings.TrimSuffix(f, filepath.Ext(f))

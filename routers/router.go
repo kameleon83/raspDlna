@@ -20,7 +20,7 @@ func init() {
 	beego.Router("/list/:dir*", &controllers.ListController{})
 	beego.Router("/vues/:files*.*", &controllers.VuesController{})
 	beego.Router("/pas-vues/:files*.*", &controllers.PasVuesController{})
-	beego.Router("/edit/:name*.*", &controllers.ChdirController{})
+	beego.Router("/edit/:name*.*", &controllers.ChdirController{}, "get:Chdir;post:ChangeDir")
 	beego.Router("/srt/:video*.*", &controllers.CmdController{}, "*:Srt")
 	beego.Router("/delete/:f*.*", &controllers.DeleteController{}, "*:Delete")
 	beego.Router("/rename/:old*.*", &controllers.CmdController{}, "*:Rename")
