@@ -1,6 +1,4 @@
 <h1>{{ .title }}</h1>
-
-<nav>
 	<ol class="breadcrumb">
 		<li><a href="/">Home</a></li>
 		{{ range $k, $c := .chemin }}
@@ -9,7 +7,7 @@
 		</li>
 		{{ end }}
 	</ol>
-</nav>
+	{{ template "navbar.tpl" . }}
 
 <div class="">
 

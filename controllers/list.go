@@ -24,7 +24,7 @@ func (c *ListController) Get() {
 	flash := beego.ReadFromRequest(&c.Controller)
 
 	if _, err := os.Stat(exepath + "/.config.json"); err != nil {
-		fmt.Println("erreur")
+		fmt.Println("erreur Il n'y a pas de config.json")
 		c.DestroySession()
 	}
 

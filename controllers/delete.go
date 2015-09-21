@@ -61,7 +61,7 @@ func Delete(pathFile string) (bool, error) {
 				pathFileNotExt := strings.TrimSuffix(pathFile, filepath.Ext(pathFile))
 				pathFileWithExt := pathFileNotExt + ".srt"
 				if _, err := os.Stat(pathFileWithExt); err != nil {
-					check(err)
+					fmt.Println("Il n'y a pas de srt")
 				} else {
 					if err := os.Remove(pathFileWithExt); err != nil {
 						check(err)

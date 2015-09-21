@@ -1,7 +1,6 @@
 package routers
 
 import (
-	"fmt"
 	"raspDlna/controllers"
 
 	"github.com/astaxie/beego/context"
@@ -24,6 +23,8 @@ func init() {
 	beego.Router("/srt/:video*.*", &controllers.CmdController{}, "*:Srt")
 	beego.Router("/delete/:f*.*", &controllers.DeleteController{}, "*:Delete")
 	beego.Router("/rename/:old*.*", &controllers.CmdController{}, "*:Rename")
+	beego.Router("/mkdir/:folder*.*", &controllers.CmdController{}, "*:Mkdir")
+	beego.Router("/chown", &controllers.CmdController{}, "*:Chown")
 
 	//Erreurs
 	beego.ErrorController(&controllers.ErrorController{})
@@ -31,7 +32,6 @@ func init() {
 
 var FilterLogin = func(ctx *context.Context) {
 	_, ok := ctx.Input.Session("name").(string)
-	fmt.Println(ok)
 	if !ok && ctx.Input.Uri() != "/login" && ctx.Input.Uri() != "/register" {
 		ctx.Redirect(302, "/login")
 	}
