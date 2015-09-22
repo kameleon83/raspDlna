@@ -9,3 +9,14 @@
 .text-center {
   text-align: center;
   vertical-align: middle; }
+
+  .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+     background-color: #DFF0D8;
+  }
+.table-spacedisk{
+    background-color: #ffffff;
+}
+
+.margin-top{
+    margin-top: 70px;
+}

@@ -17,11 +17,9 @@ type CmdController struct {
 }
 
 func (c *CmdController) Srt() {
-	var a = make(chan int, 10)
 	lien := c.Ctx.Input.Param(":video")
 	lien = html.UnescapeString(lien)
 	d, _ := Emplacement(Root, lien)
-	// // ffmpeg -i Movie.mkv -map 0:s:0 subs.srt
 	dNew := strings.Replace(d, " ", `.`, -1)
 	fileNotExt := strings.TrimSuffix(dNew, filepath.Ext(dNew))
 	if result := Rename(d, dNew); !result {
@@ -36,10 +34,7 @@ func (c *CmdController) Srt() {
 		} else {
 			fmt.Println("Le sous-titre est créé")
 		}
-		a <- 0
 	}()
-	<-a
-	fmt.Println(<-a)
 	c.Redirect("/list/"+path.Clean(path.Dir(lien)), 302)
 
 }
@@ -135,6 +130,18 @@ func (c *CmdController) Mkdir() {
 	c.Redirect("/list/"+lien, 302)
 }
 
+func ListUser() []string {
+	cmd := exec.Command("cat", "/etc/passwd")
+	t, _ := cmd.Output()
+	return strings.Split(string(t), "\n")
+}
+
+func ListGroup() []string {
+	cmd := exec.Command("cat", "/etc/group")
+	t, _ := cmd.Output()
+	return strings.Split(string(t), "\n")
+}
+
 func (c *CmdController) Chown() {
 
 	user := c.Ctx.Request.Form["user"]
@@ -143,20 +150,37 @@ func (c *CmdController) Chown() {
 	u := strings.Join(user, "")
 	g := strings.Join(group, "")
 	p := strings.Join(pass, "")
-
-	cmd := exec.Command("sudo", "-S", "chown", "-R", u+":"+g, Root, "<<<", p)
 	go func() {
-		stdout, err := cmd.Output()
+		cmd := exec.Command("/bin/sh", "-c", "sudo -S chown -R "+u+":"+g+" ~/Images/ <<< "+p)
+		valeur, err := cmd.CombinedOutput()
 		if err != nil {
-			fmt.Println("Erreur : ", err)
-			fmt.Println(cmd)
-			fmt.Println(string(stdout))
+			fmt.Println("Erreur 1: ", err)
 		} else {
+			fmt.Println(string(valeur))
 			fmt.Println("Chown effectué")
 		}
-		fmt.Println(string(stdout))
 	}()
+
 	c.Redirect("/", 302)
+}
+
+func (c *CmdController) CmdPerso() {
+	lien := c.Ctx.Input.Param("lien")
+	// d, _ := Emplacement(Root, lien)
+	c.Ctx.Request.ParseForm()
+	args := c.Ctx.Request.Form["cmdperso"]
+	a := strings.Join(args, "")
+	go func() {
+		cmd := exec.Command("/bin/sh", "-c", a)
+		valeur, err := cmd.CombinedOutput()
+		if err != nil {
+			fmt.Println("Erreur 1: ", err)
+		} else {
+			fmt.Println(string(valeur))
+			fmt.Println("Commande effectué avec succès")
+		}
+	}()
+	c.Redirect("/list/"+lien, 302)
 }
 
 func (c *CmdController) KeepOneAudio() {
@@ -176,16 +200,31 @@ func (c *CmdController) KeepOneAudio() {
 }
 
 func (c *CmdController) DtsToAc3() {
+	flash := beego.NewFlash()
 	lien := c.Ctx.Input.Param(":video")
-	cmd := exec.Command("ffmpeg", "-i", "inputfile.mkv", "-vcodec", "copy", "-scodec", "copy", "-acodec", "ac3", "-ac", "6", "-ab", "640k", "output.mkv")
+	d, _ := Emplacement(Root, lien)
+	c.Ctx.Request.ParseForm()
+	newName := strings.Join(c.Ctx.Request.Form["dtstoac3"], "")
+	fmt.Println(newName)
+	a, _ := Emplacement(Root, path.Dir(lien)+"/"+newName)
+	fmt.Println(a)
+	cmd := exec.Command("ffmpeg", "-i", d, "-vcodec", "copy", "-scodec", "copy", "-acodec", "ac3", "-ac", "6", "-ab", "640k", a)
 	go func() {
-		err := cmd.Start()
+		t, err := cmd.CombinedOutput()
 		if err != nil {
 			fmt.Println("Erreur : ", err)
 		} else {
-			fmt.Println("Le sous-titre est créé")
+			fmt.Println(string(t))
+			fmt.Println("Le son est maintenant en AC3")
 		}
 	}()
+	flash.Notice("Encodage Du Dts en Ac3 en cours")
+	flash.Store(&c.Controller)
 	c.Redirect("/list/"+path.Clean(path.Dir(lien)), 302)
+}
 
+func SpaceDisk() []string {
+	cmd := exec.Command("df", "-h", Root)
+	b, _ := cmd.Output()
+	return strings.Split(string(b), "\n")
 }

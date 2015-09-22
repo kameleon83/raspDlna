@@ -25,6 +25,8 @@ func init() {
 	beego.Router("/rename/:old*.*", &controllers.CmdController{}, "*:Rename")
 	beego.Router("/mkdir/:folder*.*", &controllers.CmdController{}, "*:Mkdir")
 	beego.Router("/chown", &controllers.CmdController{}, "*:Chown")
+	beego.Router("/cmdperso/:lien*.*", &controllers.CmdController{}, "*:CmdPerso")
+	beego.Router("/dtstoac3/:video*.*", &controllers.CmdController{}, "*:DtsToAc3")
 
 	//Erreurs
 	beego.ErrorController(&controllers.ErrorController{})

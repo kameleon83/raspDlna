@@ -18,4 +18,6 @@ type FileInfo struct {
 	Srt           int
 	SizeSrt       float64
 	NameTailleSrt string
+	GetUid        uint32
+	GetGid        uint32
 }

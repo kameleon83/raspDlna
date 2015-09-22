@@ -23,14 +23,17 @@
                     Changer les droits
                 </button>
             </div>
-
+            <form action="/cmdperso{{ .href }}" method="post">
+            <div class="navbar-form navbar-right">
+                <input type="input" class="form-control" placeholder="Cmd Perso : " size="50" name="cmdperso" value="" />
+                <button type="submit" class="btn btn-primary">
+                    Valider
+                </button>
+            </div>
+        </form>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
-
-
-<br/>
-<br/>
 
 
 
@@ -43,13 +46,11 @@
                     <h4 class="modal-title" id="myModalLabel">Créer un dossier ici</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <fieldset class="form-group">
-                            <div class="col-sm-10">
+                        <fieldset>
+                            <div class="col-sm-10 form-group">
                                 <input type="text" class="form-control" id="mkdir"  placeholder="Créer un nouveau dossier" name="mkdir" value="" />
                             </div>
                         </fieldset>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -65,29 +66,39 @@
 
 <div class="modal fade" id="chown" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
-        <form method="POST" class="form-inline col-sm-12" action="/chown">
+        <form method="POST" class="form-horizontal" action="/chown">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="myModalLabel">Changer utilisateur sur tous les fichiers et dossiers</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <fieldset class="form-group">
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" id="user"  placeholder="Utilisateur" name="user" value="" />
-                            </div>
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" id="group"  placeholder="Groupe" name="group" value="" />
-                            </div>
-                            <br>
-                            <br>
-                            <br>
-                            <div class="col-md-12">
-                                <input type="password" class="form-control" id="pass"  placeholder="Sudo Password" name="pass" value="" />
-                            </div>
-                        </fieldset>
-                    </div>
+
+                    <fieldset>
+                        <div class="col-md-10 form-group">
+                            <label for="listUid">Choisir Utilisateur</label>
+                            <select class="form-control" name="user" id="listUid">
+                                {{ range $k, $v := .user }}
+                                <option value="{{ $v }}">{{ $k }}</option>
+                                {{ end }}
+                            </select>
+                        </div>
+                        <div class="col-md-10 form-group">
+                            <label for="listGid">Choisir Groupe</label>
+                            <select class="form-control" name="group" id="listGid">
+                                {{ range $k, $v := .group }}
+                                <option value="{{ $v }}">{{ $k }}</option>
+                                {{ end }}
+                            </select>
+                        </div>
+                        <br>
+                        <br>
+                        <br>
+                        <div class="col-md-10 form-group">
+                            <label for="pass">Rentrer le mot de passe Sudo</label>
+                            <input type="password" class="form-control" id="pass"  placeholder="Sudo Password" name="pass" value="" />
+                        </div>
+                    </fieldset>
                 </div>
                 <div class="modal-footer">
 

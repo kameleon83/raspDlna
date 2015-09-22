@@ -7,7 +7,10 @@ import (
 	"path"
 	"path/filepath"
 	"raspDlna/models"
+	"regexp"
+	"strconv"
 	"strings"
+	"syscall"
 
 	"github.com/astaxie/beego"
 	"github.com/kardianos/osext"
@@ -33,6 +36,7 @@ func (c *ListController) Get() {
 		t.Folder = listFolder(Root)
 		WriteJson(t, exepath, "listFolder")
 	}()
+
 	if _, ok := flash.Data["notice"]; ok {
 	}
 	if _, ok := flash.Data["error"]; ok {
@@ -61,10 +65,39 @@ func (c *ListController) Get() {
 	c.Data["back"] = path.Dir(file)
 	c.Data["chemin"] = strings.Split(file, "/")
 
+	user, group := MapUidGid()
+	c.Data["user"] = user
+	c.Data["group"] = group
+
+	sd := SpaceDisk()
+	reg, _ := regexp.Compile("[^A-Za-z0-9/-]+")
+	sd1 := strings.Split(reg.ReplaceAllString(sd[1], " "), " ")
+	c.Data["spacedisk"] = sd1
+
 	// c.Data["breadcrumb"] = b
 	c.Data["dirname"] = l
 	c.Layout = "index.tpl"
 	c.TplNames = "list.tpl"
+}
+
+func MapUidGid() (map[string]int, map[string]int) {
+	u := make(map[string]int)
+	for _, v := range ListUser() {
+		a := strings.Split(v, ":")
+		if a[0] != "" {
+			s, _ := strconv.Atoi(a[2])
+			u[a[0]] = s
+		}
+	}
+	g := make(map[string]int)
+	for _, v := range ListGroup() {
+		a := strings.Split(v, ":")
+		if a[0] != "" {
+			s, _ := strconv.Atoi(a[2])
+			g[a[0]] = s
+		}
+	}
+	return u, g
 }
 
 func Emplacement(dir, file string) (dire, fileExt string) {
@@ -102,6 +135,8 @@ func List(dir string) []models.FileInfo {
 								Srt:           1,
 								SizeSrt:       float64(int(tailleSrt*100)) / 100,
 								NameTailleSrt: SrtNametaillle,
+								GetUid:        entry.Sys().(*syscall.Stat_t).Uid,
+								GetGid:        entry.Sys().(*syscall.Stat_t).Gid,
 							}
 							fi.Lock()
 							list = append(list, fi)
@@ -120,6 +155,8 @@ func List(dir string) []models.FileInfo {
 						IsDir:    entry.IsDir(),
 						NameSize: nomTaille,
 						Srt:      0,
+						GetUid:   entry.Sys().(*syscall.Stat_t).Uid,
+						GetGid:   entry.Sys().(*syscall.Stat_t).Gid,
 					}
 					fi.Lock()
 					list = append(list, fi)

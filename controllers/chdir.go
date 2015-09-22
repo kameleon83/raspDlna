@@ -20,9 +20,10 @@ func (c *ChdirController) Chdir() {
 	edit := c.Ctx.Input.Param(":name")
 
 	htmlMediainfo := mediaInfo(Root, edit)
+	c.Data["htmlMediaInfo"] = htmlMediainfo
+
 	c.Data["name"] = path.Base(edit)
 	c.Data["root"] = Root
-	c.Data["htmlMediaInfo"] = htmlMediainfo
 	c.Data["edit"] = edit
 	t := models.ListFolder{}
 	c.Data["listFolder"] = ReadJsonFolder(t, exepath, "listFolder")
