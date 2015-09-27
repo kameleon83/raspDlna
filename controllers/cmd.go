@@ -39,90 +39,10 @@ func (c *CmdController) Srt() {
 
 }
 
-func (c *CmdController) Rename() {
-	oldFile := c.Ctx.Input.Param(":old")
-
-	c.Ctx.Request.ParseForm()
-	file := c.Ctx.Request.Form["rename"]
-	newFile := filepath.Clean(strings.Replace(path.Dir(oldFile)+"/"+strings.Join(file, ""), " ", ".", -1))
-	dOld, _ := Emplacement(Root, oldFile)
-	dNew, _ := Emplacement(Root, newFile)
-	chemin := path.Clean(strings.Replace(path.Dir(dNew), Root, "", -1))
-	c.Redirect("/list/"+chemin, 302)
-	if result := Rename(dOld, dNew); result == true {
-		fmt.Println("Le Dossier / fichier a bien été modifié")
-	}
-}
-
-func Rename(oldFile, newFile string) bool {
-	info, err := os.Stat(oldFile)
-	if err != nil {
-		return false
-	}
-	if info.IsDir() {
-		if err := os.Mkdir(newFile, 0777); err != nil {
-			check(err)
-		} else {
-			if err := os.Rename(oldFile, newFile); err != nil {
-				check(err)
-			} else {
-				return true
-			}
-		}
-	} else {
-		if err := os.Rename(oldFile, newFile); err != nil {
-			check(err)
-		} else {
-			oldFileNotExt := strings.TrimSuffix(oldFile, filepath.Ext(oldFile))
-			newFileNotExt := strings.TrimSuffix(newFile, filepath.Ext(newFile))
-			oldFileWithExt := oldFileNotExt + ".srt"
-			if _, err := os.Stat(oldFileWithExt); err != nil {
-				fmt.Println("Il n'existe pas de sous titre")
-				if f, err := os.Stat(path.Dir(oldFile)); err != nil {
-					check(err)
-				} else {
-					if f.IsDir() {
-						if v, err := IsEmpty(path.Dir(oldFile)); v == true && err == nil {
-							if v, err := Delete(path.Dir(oldFile)); v != true && err != nil {
-								check(err)
-							} else {
-								return true
-							}
-						}
-					}
-				}
-				return true
-			} else {
-				if err := os.Rename(oldFileWithExt, newFileNotExt+".srt"); err != nil {
-					check(err)
-				} else {
-					if f, err := os.Stat(path.Dir(oldFile)); err != nil {
-						check(err)
-					} else {
-						if f.IsDir() {
-							if v, err := IsEmpty(path.Dir(oldFile)); v == true && err == nil {
-								if v, err := Delete(path.Dir(oldFile)); v != true && err != nil {
-									check(err)
-								} else {
-									return true
-								}
-							}
-						}
-					}
-					return true
-				}
-			}
-
-			return true
-		}
-	}
-	return false
-}
-
 func (c *CmdController) Mkdir() {
 	lien := c.Ctx.Input.Param(":folder")
 	folder := c.Ctx.Request.Form["mkdir"]
-	a := path.Clean(lien + "/" + strings.ToLower(strings.Replace(strings.Join(folder, ""), " ", "-", -1)))
+	a := path.Clean(lien + "/" + FormatString(strings.Join(folder, "")))
 	d, _ := Emplacement(Root, a)
 	if err := os.Mkdir(d, 0777); err != nil {
 		check(err)
@@ -185,14 +105,20 @@ func (c *CmdController) CmdPerso() {
 
 func (c *CmdController) KeepOneAudio() {
 	lien := c.Ctx.Input.Param(":video")
+	d, _ := Emplacement(Root, lien)
+	c.Ctx.Request.ParseForm()
+	i := strings.Join(c.Ctx.Request.Form["number"], "")
+	newName := strings.Join(c.Ctx.Request.Form["newName"], "")
+	a, _ := Emplacement(Root, path.Dir(lien)+"/"+FormatString(newName))
 
-	cmd := exec.Command("mkvmerge", "-o", "output.mkv", "--atracks", "number mediainfo audio -1 ", "input.mkv")
+	cmd := exec.Command("mkvmerge", "-o", a, "--atracks", i, d)
 	go func() {
-		err := cmd.Start()
+		t, err := cmd.CombinedOutput()
 		if err != nil {
 			fmt.Println("Erreur : ", err)
 		} else {
-			fmt.Println("Le sous-titre est créé")
+			fmt.Println(string(t))
+			fmt.Println("Vidéo avec une seule piste audio")
 		}
 	}()
 	c.Redirect("/list/"+path.Clean(path.Dir(lien)), 302)
@@ -205,9 +131,7 @@ func (c *CmdController) DtsToAc3() {
 	d, _ := Emplacement(Root, lien)
 	c.Ctx.Request.ParseForm()
 	newName := strings.Join(c.Ctx.Request.Form["dtstoac3"], "")
-	fmt.Println(newName)
-	a, _ := Emplacement(Root, path.Dir(lien)+"/"+newName)
-	fmt.Println(a)
+	a, _ := Emplacement(Root, path.Dir(lien)+"/"+FormatString(newName))
 	cmd := exec.Command("ffmpeg", "-i", d, "-vcodec", "copy", "-scodec", "copy", "-acodec", "ac3", "-ac", "6", "-ab", "640k", a)
 	go func() {
 		t, err := cmd.CombinedOutput()
@@ -227,4 +151,8 @@ func SpaceDisk() []string {
 	cmd := exec.Command("df", "-h", Root)
 	b, _ := cmd.Output()
 	return strings.Split(string(b), "\n")
+}
+func FormatString(file string) string {
+	f := strings.ToLower(strings.Replace(file, " ", "-", -1))
+	return f
 }

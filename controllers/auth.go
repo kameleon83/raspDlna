@@ -34,11 +34,11 @@ func (l *AuthController) Login() {
 					fmt.Println("Pas de donnée parsé")
 				} else {
 					l.Ctx.Request.ParseForm()
-					if username == n {
+					if FormatString(username) == n {
 						if err := CompareHashAndPassword([]byte(p), []byte(password)); err != nil {
 							fmt.Println("les mots de passes ne correspondent pas")
 						} else {
-							l.SetSession("name", username)
+							l.SetSession("name", FormatString(username))
 							l.SetSession("root", r)
 							l.Redirect("/", 302)
 						}
@@ -80,7 +80,7 @@ func (l *AuthController) Register() {
 				if pass == confirmPass {
 					valid := validation.Validation{}
 					if password, err := GenerateFromPassword([]byte(pass), DefaultCost); err == nil {
-						register.Name = name
+						register.Name = FormatString(name)
 						register.Password = string(password)
 						register.Root = path.Clean(pathFolder) + "/"
 						if _, err := valid.Valid(&register); err != nil {

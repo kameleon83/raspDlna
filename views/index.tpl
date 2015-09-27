@@ -47,6 +47,7 @@
                 </button>
             </div>
             {{ end }}
+            {{ template "footer.tpl" . }}
         </footer>
         <div class="backdrop"></div>
     </div>

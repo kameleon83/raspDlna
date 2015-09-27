@@ -18,6 +18,11 @@
                     Dts to AC3
                 </button>
             </div>
+            <div class="navbar-form navbar-left">
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#KeepOneAudio">
+                    Garder une seule piste audio
+                </button>
+            </div>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
@@ -46,6 +51,38 @@
 </div>
 
 
+<div class="modal fade" id="KeepOneAudio" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <form method="POST" class="form-horizontal col-sm-12" action="/oneaudio/{{ .back }}/{{ .name }}">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Garder une seule Piste audio</h4>
+                </div>
+                <div class="modal-body">
+                    <fieldset>
+                        <div class="col-sm-12 form-group">
+                            <label for="newName">Choisir un nouveau nom : </label>
+                            <input type="text" class="form-control" id="newName" placeholder="Choisi un nouveau nom" name="newName" value="{{ .name }}" />
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <div class="col-sm-12 form-group">
+                            <label for="number">Choisir la piste à garder : Audio# ?</label>
+                            <input type="number" class="form-control" id="number" placeholder="ex : Audio# : 1" name="number" value="" />
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">
+                        Enregistré la modification !
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <div class="modal fade" id="DtsToAc3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <form method="POST" class="form-horizontal col-sm-12" action="/dtstoac3/{{ .back }}/{{ .name }}">

@@ -1,31 +1,7 @@
 <div class="margin-top">
 
 </div>
-<div class="pull-right navbar-fixed-top table-spacedisk">
-	<table class="table table-condensed">
-		<th class="text-center">Taille Disque Total</th>
-		<th class="text-center">Taille utilisé</th>
-		<th class="text-center">Taille Restante</th>
-		<th class="text-center">% Restant</th>
-		<th class="text-center">Disque</th>
-		<tr>
-			{{ range $k,$v := .spacedisk}}
-			{{ if compare_not $k "0"}}
-			<td class="text-center">{{ $v }}</td>
-			{{ end }}
-			{{ end }}
-		</tr>
-	</table>
-</div>
-<h1>{{ .title }}</h1>
-<ol class="breadcrumb">
-	<li><a href="/">Home</a></li>
-	{{ range $k, $c := .chemin }}
-	<li>
-		{{ $c }}
-	</li>
-	{{ end }}
-</ol>
+
 {{ template "navbar.tpl" . }}
 
 <div class="row">
