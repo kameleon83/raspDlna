@@ -63,7 +63,8 @@ func (c *ListController) Get() {
 	c.Data["title"] = strings.Title("liste")
 	c.Data["href"] = "/" + file
 	c.Data["back"] = path.Dir(file)
-	c.Data["chemin"] = strings.Split(file, "/")
+
+	c.Data["chemin"] = breadcrumb(file)
 
 	user, group := MapUidGid()
 	c.Data["user"] = user
@@ -74,10 +75,26 @@ func (c *ListController) Get() {
 	sd1 := strings.Split(reg.ReplaceAllString(sd[1], " "), " ")
 	c.Data["spacedisk"] = sd1
 
-	// c.Data["breadcrumb"] = b
+	c.Data["nonLues"], c.Data["numNonLues"] = Nonlues(Root)
 	c.Data["dirname"] = l
 	c.Layout = "index.tpl"
 	c.TplNames = "list.tpl"
+
+}
+
+func breadcrumb(file string) []models.Breadcrumb {
+	x := []models.Breadcrumb{}
+	a := strings.Split(file, "/")
+	b := ""
+	for _, v := range a {
+		b = b + "/" + v
+		t := models.Breadcrumb{
+			Url:  b,
+			Name: v,
+		}
+		x = append(x, t)
+	}
+	return x
 }
 
 func MapUidGid() (map[string]int, map[string]int) {
@@ -195,4 +212,31 @@ func Taille(i float64) (float64, string) {
 		nomTaille = "o"
 	}
 	return taille, nomTaille
+}
+
+func Nonlues(root string) (fileList []models.ListFilesNotView, i int) {
+	fileList = []models.ListFilesNotView{}
+	len := len(root)
+	i = 0
+	err := filepath.Walk(root, func(path string, f os.FileInfo, err error) error {
+		if !f.IsDir() {
+			if !strings.HasPrefix(f.Name(), ".") {
+				reg, _ := regexp.MatchString(`\.(mkv|avi|mp4)$`, f.Name())
+				if reg {
+					i++
+					t := models.ListFilesNotView{
+						Url:  filepath.Dir(strings.TrimPrefix(path[len:], "/")),
+						Name: filepath.Base(f.Name()),
+					}
+					fileList = append(fileList, t)
+				}
+			}
+
+		}
+		return nil
+	})
+	if err != nil {
+		check(err)
+	}
+	return
 }

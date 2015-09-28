@@ -20,4 +20,5 @@ type FileInfo struct {
 	NameTailleSrt string
 	GetUid        uint32
 	GetGid        uint32
+	Img           string
 }
