@@ -48,6 +48,6 @@ func (p *PasVuesController) Post() {
 		p.Redirect("/list/"+path.Dir(file), 302)
 	}
 	p.Layout = "index.tpl"
-	p.TplNames = "list.tpl"
+	p.TplName = "list.tpl"
 	p.Data["title"] = strings.Title("liste")
 }

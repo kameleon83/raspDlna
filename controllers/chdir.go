@@ -29,7 +29,7 @@ func (c *ChdirController) Chdir() {
 	c.Data["listFolder"] = ReadJsonFolder(t, exepath, "listFolder")
 	c.Data["back"] = path.Dir(edit)
 	c.Layout = "index.tpl"
-	c.TplNames = "chdir.tpl"
+	c.TplName = "chdir.tpl"
 }
 
 func (c *ChdirController) ChangeDir() {
@@ -61,6 +61,7 @@ func (c *ChdirController) ChangeDir() {
 func listFolder(root string) []string {
 	fileList := []string{}
 	len := len(root)
+	fmt.Println(root)
 	err := filepath.Walk(root, func(path string, f os.FileInfo, err error) error {
 		if f.IsDir() {
 			t := strings.TrimPrefix(path[len:], "/")

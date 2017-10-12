@@ -56,7 +56,7 @@ func (l *AuthController) Login() {
 
 	l.Data["title"] = "Se connecter"
 	l.Layout = "index.tpl"
-	l.TplNames = "login.tpl"
+	l.TplName = "login.tpl"
 }
 
 func (l *AuthController) Register() {
@@ -99,5 +99,5 @@ func (l *AuthController) Register() {
 	l.Data["title"] = "Configurer l'application"
 	l.Data["root"] = Root
 	l.Layout = "index.tpl"
-	l.TplNames = "register.tpl"
+	l.TplName = "register.tpl"
 }

@@ -13,14 +13,13 @@ import (
 	"syscall"
 
 	"github.com/astaxie/beego"
-	"github.com/kardianos/osext"
 )
 
 type ListController struct {
 	beego.Controller
 }
 
-var exepath, _ = osext.ExecutableFolder()
+var exepath, _ = os.Getwd()
 var _, _, Root, _ = ReadJson(models.Configuration{}, exepath)
 
 func (c *ListController) Get() {
@@ -78,7 +77,7 @@ func (c *ListController) Get() {
 	c.Data["nonLues"], c.Data["numNonLues"] = Nonlues(Root)
 	c.Data["dirname"] = l
 	c.Layout = "index.tpl"
-	c.TplNames = "list.tpl"
+	c.TplName = "list.tpl"
 
 }
 
