@@ -4,32 +4,32 @@
 
 {{ template "navbar.tpl" . }}
 
-<div class="row">
+<div class="col-md-12">
 
 	<table class="table table-striped table-hover">
 		<thead>
-			<tr>
-				<th>
+			<tr class="row">
+				<th class="col-md-1">
 					<a href="/list/{{ .back }}"><span class="glyphicon glyphicon-arrow-up"></span></a>
 				</th>
-				<th>User : Group</th>
-				<th>Nom</th>
-				<th>Taille</th>
-				<th>Srt</th>
-				<th>Edition</th>
+				<th class="col-md-1">User : Group</th>
+				<th class="col-md-5">Nom</th>
+				<th class="col-md-1">Taille</th>
+				<th class="col-md-1">Srt</th>
+				<th class="col-md-3">Edition</th>
 			</tr>
 		</thead>
 		<tbody>
 
 			{{ range $k, $l := .dirname }}
-			<tr>
-				<td>
+			<tr class="row">
+				<td class="col-md-1">
 					{{ $a := substr $l.Name 0 1}}
 					{{ if compare $a "." }}
 					<span class="glyphicon glyphicon-ok"></span>
 					{{ end }}
 				</td>
-				<td>
+				<td class="col-md-1">
 					{{ range $k,$v := $.user }}
 					{{ if compare $v $l.GetUid }}
 					{{ $k }}
@@ -43,7 +43,7 @@
 					{{ end }}
 
 				</td>
-				<td>
+				<td class="col-md-5">
 					{{ if $l.IsDir }}
 					<a href='/list{{ $.href}}/{{ $l.Name }}'>
 
@@ -53,16 +53,16 @@
 					{{ $l.Name }}<span class="label label-default pull-right">{{ $l.NameExt }}</span>
 					{{ end }}
 				</td>
-				<td>
+				<td class="col-md-1">
 					{{ $l.Size }} . {{ $l.NameSize }}
 				</td>
-				<td>
+				<td class="col-md-1">
 					{{ if compare $l.Srt "1"}}
 					<span class="glyphicon glyphicon-list-alt"></span>.
 					{{ $l.SizeSrt }} {{ $l.NameTailleSrt }}
 					{{ end}}
 				</td>
-				<td class="inline-td">
+				<td class="inline-td col-md-3">
 					<form method="POST" action="/vues{{ $.href }}/{{ $l.Name}}">
 						{{ if not $l.IsDir }}
 						<button type="submit" class="btn btn-link ">

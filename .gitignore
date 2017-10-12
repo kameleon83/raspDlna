@@ -1,3 +1,4 @@
+tmp/*
 *.json
 raspDlna
 main
