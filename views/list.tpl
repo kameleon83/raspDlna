@@ -4,7 +4,7 @@
 
 {{ template "navbar.tpl" . }}
 
-<div class="col-md-12">
+<div class="table-responsive">
 
 	<table class="table table-striped table-hover">
 		<thead>
@@ -16,7 +16,7 @@
 				<th class="col-md-5">Nom</th>
 				<th class="col-md-1">Taille</th>
 				<th class="col-md-1">Srt</th>
-				<th class="col-md-3">Edition</th>
+				<th class="col-md-4">Edition</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -62,7 +62,7 @@
 					{{ $l.SizeSrt }} {{ $l.NameTailleSrt }}
 					{{ end}}
 				</td>
-				<td class="inline-td col-md-3">
+				<td class="inline-td col-md-4">
 					<form method="POST" action="/vues{{ $.href }}/{{ $l.Name}}">
 						{{ if not $l.IsDir }}
 						<button type="submit" class="btn btn-link ">
