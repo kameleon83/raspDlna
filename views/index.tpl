@@ -2,7 +2,7 @@
 
 <html>
 <head>
-    <title>Beego</title>
+    <title>RaspDlna</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link rel="stylesheet" href="/static/css/list.css" media="screen" title="no title" charset="utf-8">
     <link rel="stylesheet" href="/static/css/bootstrap.css" media="screen" title="no title" charset="utf-8">
