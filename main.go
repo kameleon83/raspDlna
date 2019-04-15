@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"log"
-	_ "raspDlna/routers"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/session"

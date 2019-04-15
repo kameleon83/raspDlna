@@ -6,7 +6,6 @@ import (
 	"testing"
 	"runtime"
 	"path/filepath"
-	_ "raspDlna/routers"
 
 	"github.com/astaxie/beego"
 	. "github.com/smartystreets/goconvey/convey"
